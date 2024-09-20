@@ -1,3 +1,6 @@
+import sys
+sys.path.append("/home/stanisla/PycharmProjects/stanisla_home_bot/venv/lib/python3.10/site-packages")
+
 
 import playsound
 import os
@@ -7,10 +10,12 @@ from telebot import types
 from config import token
 
 
+
+
 bot=telebot.TeleBot(token)
 
-directory = "./sounds"
-
+directory = os.getcwd() + "/sounds"
+print(directory)
 # Получаем список файлов
 files = os.listdir(directory)
 sound_files = list(map(lambda x: x[0:-4], files))
@@ -102,16 +107,16 @@ def menu(message):
 if __name__ == '__main__':
     print(f"Bot started, {datetime.datetime.now()}")
 
-    with open("users_id.txt", 'r+', encoding="utf-8") as file:
-        user_ids = file.readlines()
-        for user_id in user_ids:
-            bot.send_message(user_id, "Бот запущен.")
+    # with open("users_id.txt", 'r+', encoding="utf-8") as file:
+    #     user_ids = file.readlines()
+    #     for user_id in user_ids:
+    #         bot.send_message(user_id, "Бот запущен.")
 
     bot.infinity_polling()
 
-    with open("users_id.txt", 'r+', encoding="utf-8") as file:
-        user_ids = file.readlines()
-        for user_id in user_ids:
-            bot.send_message(user_id, "Бот остановлен.")
+    # with open("users_id.txt", 'r+', encoding="utf-8") as file:
+    #     user_ids = file.readlines()
+    #     for user_id in user_ids:
+    #         bot.send_message(user_id, "Бот остановлен.")
 
     print(f"Bot stopped, {datetime.datetime.now()}")
