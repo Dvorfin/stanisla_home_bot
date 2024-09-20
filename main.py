@@ -72,6 +72,7 @@ def menu(message):
     elif message.text in sound_files:
         playsound.playsound(os.getcwd() + f"/sounds/{message.text}.mp3")
         bot.delete_message(message.chat.id, message.message_id)
+        print(f"Button {message.text} clicked, {datetime.datetime.now()}")
 
     elif message.text == "back":
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
