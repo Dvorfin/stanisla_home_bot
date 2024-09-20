@@ -1,4 +1,4 @@
-from turtledemo.penrose import start
+
 import playsound
 import os
 import telebot
@@ -53,19 +53,19 @@ def menu(message):
         bot.send_message(message.chat.id, 'Выбираем смачный звук:', reply_markup=keyboard)  # хендлим реплай
 
     elif message.text == 'capuchino':
-        playsound.playsound(os.getcwd() + "\\sounds\\capuchino.mp3")
+        playsound.playsound(os.getcwd() + "/sounds/capuchino.mp3")
         bot.delete_message(message.chat.id, message.message_id)
 
     elif message.text == 'chitir_chitir':
-        playsound.playsound(os.getcwd() + "\\sounds\\chitir_chitir.mp3")
+        playsound.playsound(os.getcwd() + "/sounds/chitir_chitir.mp3")
         bot.delete_message(message.chat.id, message.message_id)
 
     elif message.text == 'dack_is_that':
-        playsound.playsound(os.getcwd() + "\\sounds\\dack_is_that.mp3")
+        playsound.playsound(os.getcwd() + "/sounds/dack_is_that.mp3")
         bot.delete_message(message.chat.id, message.message_id)
 
     elif message.text == 'remont_starts_with_coffe':
-        playsound.playsound(os.getcwd() + "\\sounds\\remont_starts_with_coffe.mp3")
+        playsound.playsound(os.getcwd() + "/sounds/remont_starts_with_coffe.mp3")
         bot.delete_message(message.chat.id, message.message_id)
 
     elif message.text == "back":
