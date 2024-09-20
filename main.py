@@ -8,11 +8,25 @@ from config import token
 
 
 bot=telebot.TeleBot(token)
+
+directory = "./sounds"
+
+# Получаем список файлов
+files = os.listdir(directory)
+sound_files = list(map(lambda x: x[0:-4], files))
+
+
 @bot.message_handler(commands=['start'])
 def start_message(message):
     print(f"Someone entered bot, {datetime.datetime.now()}")
     start_foto = open('pictures/start_foto.jpg', 'rb')
     bot.send_photo(message.chat.id, start_foto, caption="Приветствуем тебя в Станисла хоум!")
+
+    with open("users_id.txt", 'r+', encoding="utf-8") as file:
+        user_id = str(message.chat.id)
+        print(f"User_id: {user_id}")
+        file.writelines(user_id)
+
     #bot.send_message(message.chat.id,"Приветствуем тебя в Станисла хоум!")
 
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -40,32 +54,23 @@ def menu(message):
         keyboard.add(button_play_sound, button_movement, button_random, button_back)
         bot.delete_message(message.chat.id, message.message_id - 1)
         bot.send_message(message.chat.id, 'Меню:', reply_markup=keyboard) # хендлим реплай
+        print(f"Open your ihome clicked, {datetime.datetime.now()}")
 
     elif message.text == 'button_play_sound':
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        sound_1 = types.KeyboardButton("capuchino")
-        sound_2 = types.KeyboardButton("chitir_chitir")
-        sound_3 = types.KeyboardButton("dack_is_that")
-        sound_4 = types.KeyboardButton("remont_starts_with_coffe")
+
+        for sound_file in sound_files:
+            sound = types.KeyboardButton(sound_file)
+            keyboard.add(sound)
+
         button_back = types.KeyboardButton('back')
-        keyboard.add(sound_1, sound_2, sound_3, sound_4, button_back)
+        keyboard.add(button_back)
         bot.delete_message(message.chat.id, message.message_id - 1)
         bot.send_message(message.chat.id, 'Выбираем смачный звук:', reply_markup=keyboard)  # хендлим реплай
+        print(f"Button play sound clicked, {datetime.datetime.now()}")
 
-    elif message.text == 'capuchino':
-        playsound.playsound(os.getcwd() + "/sounds/capuchino.mp3")
-        bot.delete_message(message.chat.id, message.message_id)
-
-    elif message.text == 'chitir_chitir':
-        playsound.playsound(os.getcwd() + "/sounds/chitir_chitir.mp3")
-        bot.delete_message(message.chat.id, message.message_id)
-
-    elif message.text == 'dack_is_that':
-        playsound.playsound(os.getcwd() + "/sounds/dack_is_that.mp3")
-        bot.delete_message(message.chat.id, message.message_id)
-
-    elif message.text == 'remont_starts_with_coffe':
-        playsound.playsound(os.getcwd() + "/sounds/remont_starts_with_coffe.mp3")
+    elif message.text in sound_files:
+        playsound.playsound(os.getcwd() + f"/sounds/{message.text}.mp3")
         bot.delete_message(message.chat.id, message.message_id)
 
     elif message.text == "back":
@@ -78,6 +83,7 @@ def menu(message):
         keyboard.add(button_play_sound, button_movement, button_random, button_back)
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, 'Меню:', reply_markup=keyboard)  # хендлим реплай
+        print(f"Button back clicked, {datetime.datetime.now()}")
 
 # @bot.message_handler(content_types=['text'])
 # def message_reply(message):
@@ -94,5 +100,17 @@ def menu(message):
 
 if __name__ == '__main__':
     print(f"Bot started, {datetime.datetime.now()}")
+
+    with open("users_id.txt", 'r+', encoding="utf-8") as file:
+        user_ids = file.readlines()
+        for user_id in user_ids:
+            bot.send_message(user_id, "Бот запущен.")
+
     bot.infinity_polling()
+
+    with open("users_id.txt", 'r+', encoding="utf-8") as file:
+        user_ids = file.readlines()
+        for user_id in user_ids:
+            bot.send_message(user_id, "Бот остановлен.")
+
     print(f"Bot stopped, {datetime.datetime.now()}")
