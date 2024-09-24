@@ -5,14 +5,17 @@ sys.path.append("/home/stanisla/PycharmProjects/stanisla_home_bot/venv/lib/pytho
 import playsound
 import os
 import telebot
+from telebot.apihelper import ApiTelegramException
 import datetime
 from telebot import types
+import logging
 from config import token
 
 
-
-
 bot=telebot.TeleBot(token)
+logging.basicConfig(level=logging.INFO, filename="bot_log.log",filemode="w",
+                    format="%(asctime)s %(levelname)s %(message)s")
+
 
 directory = os.getcwd() + "/sounds"
 print(directory)
@@ -31,6 +34,7 @@ def start_message(message):
         user_id = str(message.chat.id)
         print(f"User_id: {user_id}")
         file.writelines(user_id)
+        logging.info(f"New user with id {user_id} started bot")
 
     #bot.send_message(message.chat.id,"Приветствуем тебя в Станисла хоум!")
 
@@ -60,6 +64,7 @@ def menu(message):
         bot.delete_message(message.chat.id, message.message_id - 1)
         bot.send_message(message.chat.id, 'Меню:', reply_markup=keyboard) # хендлим реплай
         print(f"Open your ihome clicked, {datetime.datetime.now()}")
+        logging.info(f"Button Open your ihome clicked.")
 
     elif message.text == 'button_play_sound':
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -73,11 +78,14 @@ def menu(message):
         bot.delete_message(message.chat.id, message.message_id - 1)
         bot.send_message(message.chat.id, 'Выбираем смачный звук:', reply_markup=keyboard)  # хендлим реплай
         print(f"Button play sound clicked, {datetime.datetime.now()}")
+        logging.info(f"Button play sound clicked.")
 
     elif message.text in sound_files:
-        playsound.playsound(os.getcwd() + f"/sounds/{message.text}.mp3")
+        sound = message.text
+        playsound.playsound(os.getcwd() + f"/sounds/{sound}.mp3")
         bot.delete_message(message.chat.id, message.message_id)
-        print(f"Button {message.text} clicked, {datetime.datetime.now()}")
+        print(f"Button {sound} clicked, {datetime.datetime.now()}")
+        logging.info(f"Sound {sound} played.")
 
     elif message.text == "back":
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -90,6 +98,7 @@ def menu(message):
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, 'Меню:', reply_markup=keyboard)  # хендлим реплай
         print(f"Button back clicked, {datetime.datetime.now()}")
+        logging.info(f"Button back clicked.")
 
 # @bot.message_handler(content_types=['text'])
 # def message_reply(message):
@@ -106,17 +115,27 @@ def menu(message):
 
 if __name__ == '__main__':
     print(f"Bot started, {datetime.datetime.now()}")
+    logging.info(f"Bot started.")
 
-    # with open("users_id.txt", 'r+', encoding="utf-8") as file:
-    #     user_ids = file.readlines()
-    #     for user_id in user_ids:
-    #         bot.send_message(user_id, "Бот запущен.")
+    with open("users_id.txt", 'r+', encoding="utf-8") as file:
+        user_ids = file.readlines()
+        for user_id in user_ids:
+            try:
+                bot.send_message(user_id, "Бот запущен.")
+            except ApiTelegramException as e:
+                print(f"Got error during sending msg to user {user_id}: {e}")
+                logging.warning(f"Got error during sending msg to user {user_id}: {e}")
 
     bot.infinity_polling()
 
-    # with open("users_id.txt", 'r+', encoding="utf-8") as file:
-    #     user_ids = file.readlines()
-    #     for user_id in user_ids:
-    #         bot.send_message(user_id, "Бот остановлен.")
+    with open("users_id.txt", 'r+', encoding="utf-8") as file:
+        user_ids = file.readlines()
+        for user_id in user_ids:
+            try:
+                bot.send_message(user_id, "Бот остановлен.")
+            except ApiTelegramException as e:
+                print(f"Got error during sending msg to user {user_id}: {e}")
+                logging.warning(f"Got error during sending msg to user {user_id}: {e}")
 
     print(f"Bot stopped, {datetime.datetime.now()}")
+    logging.info(f"Bot stoped.")
