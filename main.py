@@ -1,6 +1,5 @@
 import sys
-sys.path.append("/home/stanisla/PycharmProjects/stanisla_home_bot/venv/lib/python3.10/site-packages")
-
+sys.path.append("/home/stanisla/PycharmProjects/stanisla_home_bot/venv/lib/python3.10/site-packages")   # импорт нужке для работы из под системд
 
 import playsound
 import os
@@ -10,7 +9,6 @@ import datetime
 from telebot import types
 import logging
 from config import token
-
 
 bot=telebot.TeleBot(token)
 logging.basicConfig(level=logging.INFO, filename="bot_log.log",filemode="w",
@@ -53,6 +51,7 @@ def menu(message):
 
 @bot.message_handler(content_types=['text'])
 def menu(message):
+    "Главное меню выбора кнопок"
     if message.text == "Open your ihome":
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         button_play_sound = types.KeyboardButton("button_play_sound")
@@ -99,18 +98,6 @@ def menu(message):
         bot.send_message(message.chat.id, 'Меню:', reply_markup=keyboard)  # хендлим реплай
         print(f"Button back clicked, {datetime.datetime.now()}")
         logging.info(f"Button back clicked.")
-
-# @bot.message_handler(content_types=['text'])
-# def message_reply(message):
-#     if message.text == "Кнопка_1":
-#         bot.send_message(message.chat.id,"нажата кнопка 1")
-#         # здесь сделать запрос на
-#     elif message.text == "Кнопка_2":
-#         #bot.send_message(message.chat.id, "нажата кнопка 2")
-#         bot.register_next_step_handler(message, second_button_message)
-#     elif message.text == "Кнопка_назад":
-#         bot.register_next_step_handler(message, button_message)
-
 
 
 if __name__ == '__main__':

@@ -3,11 +3,14 @@ Description=My script service
 After=network.target
 
 [Service]
+# запускаем бота из проекта
 ExecStart=/usr/bin/python3 /home/stanisla/PycharmProjects/stanisla_home_bot/main.py
+# указываем рабочую директорию
 WorkingDirectory=/home/stanisla/PycharmProjects/stanisla_home_bot
 Restart=always
 User=stanisla
 
 [Install]
-WantedBy=default.target
+# ожидаем подключения интернета
+WantedBy=network.target
 
